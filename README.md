@@ -21,3 +21,7 @@ Projekt szkoleniowy — nauka Pythona pod pierwsze zlecenia.
 ```bash
 pytest
 ```
+
+## Technologie
+
+Python 3.13, pytest, requests, BeautifulSoup4, pandas, openpyxl
