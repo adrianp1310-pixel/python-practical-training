@@ -1,0 +1,23 @@
+[
+    {
+        "temperature": 17.1,
+        "windspeed": 16.9,
+        "weathercode": 2,
+        "time": "2026-05-14T11:30",
+        "name": "Warszawa"
+    },
+    {
+        "temperature": 18.5,
+        "windspeed": 7.2,
+        "weathercode": 3,
+        "time": "2026-05-14T11:30",
+        "name": "Kraków"
+    },
+    {
+        "temperature": 15.1,
+        "windspeed": 22.1,
+        "weathercode": 3,
+        "time": "2026-05-14T11:30",
+        "name": "Gdańsk"
+    }
+]
