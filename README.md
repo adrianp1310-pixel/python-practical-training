@@ -24,4 +24,4 @@ pytest
 
 ## Technologie
 
-Python 3.13, pytest, requests, BeautifulSoup4, pandas, openpyxl
+Python 3.13, pytest, requests, BeautifulSoup4, pandas, openpyxl, pathlib
