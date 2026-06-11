@@ -103,7 +103,7 @@ if __name__ == "__main__":
     if data is None:
         print("Brak danych")
         sys.exit()
-    result = save_to_csv(data, "sales.csv")
+    result = save_to_csv(data, "../data/sales.csv")
     if result is True:
         print("Zapisano do pliku")
     else:
