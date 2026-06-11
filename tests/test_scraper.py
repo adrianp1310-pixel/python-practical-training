@@ -1,53 +1,41 @@
-import os
-import sys
+import pytest
 import requests
 from unittest.mock import patch, MagicMock
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from scraper import (parse_weather_page, parse_city_links,
                      fetch_weather_page, save_to_csv, clean_float,
                      scrape_all_cities)
 
 
-html = """
-<html>
-<body>
-  <table class="weather-data">
-    <tr><th>Miasto</th><th>Temperatura</th><th>Wiatr</th></tr>
-    <tr><td>Warszawa</td><td>18.5</td><td>12.3</td></tr>
-    <tr><td>Kraków</td><td>16.2</td><td>8.7</td></tr>
-  </table>
-</body>
-</html>
-"""
+@pytest.fixture
+def weather_html():
+    return """
+        <html>
+        <body>
+          <table class="weather-data">
+            <tr><th>Miasto</th><th>Temperatura</th><th>Wiatr</th></tr>
+            <tr><td>Warszawa</td><td>18.5</td><td>12.3</td></tr>
+            <tr><td>Kraków</td><td>16.2</td><td>8.7</td></tr>
+          </table>
+        </body>
+        </html>
+        """
 
-html_none_table = """
-<html>
-<body>
-  None
-</body>
-</html>
-"""
 
-html_2 = """
-<html>
-<body>
-  <div class="city-links">
-    <a href="https://pogoda.pl/warszawa" class="city-link">Warszawa</a>
-    <a href="https://pogoda.pl/krakow" class="city-link">Kraków</a>
-    <a href="https://pogoda.pl/gdansk" class="city-link">Gdańsk</a>
-  </div>
-</body>
-</html>
-"""
+@pytest.fixture
+def city_links_html():
+    return """
+        <html>
+        <body>
+          <div class="city-links">
+            <a href="https://pogoda.pl/warszawa" class="city-link">Warszawa</a>
+            <a href="https://pogoda.pl/krakow" class="city-link">Kraków</a>
+            <a href="https://pogoda.pl/gdansk" class="city-link">Gdańsk</a>
+          </div>
+        </body>
+        </html>
+        """
 
-html_2_none_div = """
-<html>
-<body>
-  None
-</body>
-</html>
-"""
 
 html_3 = """
 <html>
@@ -88,38 +76,38 @@ krakow_html = """
 </body></html>
 """
 
-def test_parse_weather_page_returns_list():
-    result = parse_weather_page(html)
+def test_parse_weather_page_returns_list(weather_html):
+    result = parse_weather_page(weather_html)
     assert len(result) == 2
 
 
-def test_parse_weather_page_data_values():
+def test_parse_weather_page_data_values(weather_html):
     test = [
     {"miasto": "Warszawa", "temperatura": 18.5, "wiatr": 12.3},
     {"miasto": "Kraków", "temperatura": 16.2, "wiatr": 8.7},
     ]
-    result = parse_weather_page(html)
+    result = parse_weather_page(weather_html)
     assert result[0] == test[0]
 
 
-def test_parse_weather_page_no_table():
-    result = parse_weather_page(html_none_table)
+def test_parse_weather_page_no_table(empty_html):
+    result = parse_weather_page(empty_html)
     assert result is None
 
 
-def test_parse_city_links_returns_list():
-    result = parse_city_links(html_2)
+def test_parse_city_links_returns_list(city_links_html):
+    result = parse_city_links(city_links_html)
     assert len(result) == 3
 
 
-def test_parse_city_links_data_values():
+def test_parse_city_links_data_values(city_links_html):
     test = {"miasto": "Warszawa", "url": "https://pogoda.pl/warszawa"}
-    result = parse_city_links(html_2)
+    result = parse_city_links(city_links_html)
     assert result[0] == test
 
 
-def test_parse_city_links_no_container():
-    result = parse_city_links(html_2_none_div)
+def test_parse_city_links_no_container(empty_html):
+    result = parse_city_links(empty_html)
     assert result is None
 
 
@@ -163,29 +151,15 @@ def test_save_to_csv_content(tmp_path):
     assert "Warszawa" in text
 
 
-def test_clean_float_normal():
-    result = clean_float("18.5")
-    assert result == 18.5
-
-
-def test_clean_float_comma():
-    result = clean_float("18,5")
-    assert result == 18.5
-
-
-def test_clean_float_spaces():
-    result = clean_float(" 18.5 ")
-    assert result == 18.5
-
-
-def test_clean_float_empty():
-    result = clean_float("")
-    assert result is None
-
-
-def test_clean_float_invalid():
-    result = clean_float("abc")
-    assert result is None
+@pytest.mark.parametrize("raw, expected", [
+    ("18.5", 18.5),
+    ("18,5", 18.5),
+    (" 18.5 ", 18.5),
+    ("", None),
+    ("abc", None),
+])
+def test_clean_float(raw, expected):
+    assert clean_float(raw) == expected
 
 
 def test_parse_weather_page_dirty_data():
@@ -204,3 +178,26 @@ def test_scrape_all_cities(mock_fetch):
     assert result[1]["miasto"] == "Kraków"
 
 
+def test_save_to_csv_bad_path():
+    data = [
+    {"miasto": "Warszawa", "temperatura": 18.5, "wiatr": 12.3},
+    {"miasto": "Kraków", "temperatura": 16.2, "wiatr": 8.7},
+    ]
+    filepath = "/brak/takiego/katalogu/dane.csv"
+    result = save_to_csv(data, filepath)
+    assert result is False
+
+
+@patch("scraper.fetch_weather_page")
+def test_scrape_all_cities_main_page_fails(mock_fetch):
+    mock_fetch.return_value = None
+    result = scrape_all_cities("https://pogoda.pl")
+    assert result == []
+
+
+@patch("scraper.fetch_weather_page")
+def test_scrape_all_cities_one_city_fails(mock_fetch):
+    mock_fetch.side_effect = [main_html, None, krakow_html]
+    result = scrape_all_cities("https://pogoda.pl")
+    assert len(result) == 1
+    assert result[0]["miasto"] == "Kraków"
