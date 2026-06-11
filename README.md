@@ -10,8 +10,8 @@ Projekt szkoleniowy — nauka Pythona pod pierwsze zlecenia.
 - [x] Etap 3 — Excel i raporty
 - [x] Etap 4 — API i requests
 - [x] Etap 5 — Web scraping
-- [~] Etap 5.5 — Git i GitHub (w trakcie)
-- [ ] Etap 6 — pytest zaawansowany
+- [x] Etap 5.5 — Git i GitHub
+- [x] Etap 6 — pytest zaawansowany
 - [ ] Etap 7 — Testy API
 - [ ] Etap 8 — Selenium
 - [ ] Etap 9 — Portfolio
