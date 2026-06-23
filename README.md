@@ -12,7 +12,7 @@ Hands-on Python training project — building practical skills for automation, d
 - [x] Stage 5 — Web scraping (BeautifulSoup)
 - [x] Stage 5.5 — Git & GitHub workflow
 - [x] Stage 6 — Advanced pytest
-- [ ] Stage 6.5 — SQL & databases
+- [x] Stage 6.5 — SQL & databases
 - [ ] Stage 7 — API testing
 - [ ] Stage 8 — Selenium
 - [ ] Stage 9 — Portfolio
@@ -23,6 +23,8 @@ Hands-on Python training project — building practical skills for automation, d
 - **Web scraper** (`src/scraper.py`) — scrapes multi-page weather data with robots.txt checking, custom User-Agent, and rate limiting. Handles dirty real-world data (mixed decimal separators, empty cells, whitespace).
 - **Sales report cleaner** (`src/sales_cleaner_html.py`) — extracts and cleans sales data from HTML tables.
 - **Validator module** (`src/validator.py`) — input validation (email, price, env-based config) with 100% test coverage.
+- **Weather DB pipeline** (src/weather_report.py, src/db_pogoda.py) — stores 
+  scraped weather data in PostgreSQL via psycopg2 (parameterized inserts), reads it back into pandas through SQLAlchemy, and generates an Excel report with average temperature per city.
 
 ## Testing
 
