@@ -14,7 +14,7 @@ Hands-on Python training project — building practical skills for automation, d
 - [x] Stage 6 — Advanced pytest
 - [x] Stage 6.5 — SQL & databases
 - [x] Stage 7 — API testing
-- [ ] Stage 8 — Selenium
+- [x] Stage 8 — Selenium
 - [ ] Stage 9 — Portfolio
 
 ## Projects
@@ -28,16 +28,22 @@ Hands-on Python training project — building practical skills for automation, d
   sales data from HTML tables.
 - **Validator module** (`src/validator.py`) — input validation (email, price, 
   env-based config) with 100% test coverage.
-- **Weather DB pipeline** (`src/weather_report.py`, `src/db_pogoda.py`) — stores 
+- **Weather DB pipeline** (src/weather_report.py, src/db_pogoda.py) — stores 
   scraped weather data in PostgreSQL via psycopg2 (parameterized inserts), 
   reads it back into pandas through SQLAlchemy, and generates an Excel 
   report with average temperature per city.
-- **API Testing Suite** (`tests/test_jsonplaceholder.py`, `src/api.py`,
-  `tests/test_api.py`) — a QA-style test suite covering both sides of API
+- **API Testing Suite** (`tests/test_jsonplaceholder.py`, `src/api.py`, `
+  tests/test_api.py`) — a QA-style test suite covering both sides of API 
   testing: contract tests against a live public API (JSONPlaceholder) checking 
   status codes, response structure, field types, and error paths (404); plus 
   a custom FastAPI app (Pydantic models, path/body validation) with end-to-end 
   tests via TestClient, including negative tests for 422 validation errors.
+- **SeleniumBot** (`src/selenium_bot.py`) — a browser automation bot that
+  logs into a test site, verifies the result, captures a screenshot, and logs
+  out — a full end-to-end web flow. Built with Selenium WebDriver
+  (headless Chrome, WebDriverWait/expected_conditions), structured logging,
+  and explicit TimeoutException handling. Driver lifecycle managed via
+  try/finally; CLI-configurable headless mode (argparse).
 
 ## Testing
 
@@ -59,4 +65,4 @@ pytest --cov=src --cov-report=term-missing
 ## Tech stack
 
 Python 3.13, pytest, pytest-cov, requests, BeautifulSoup4, pandas, openpyxl, 
-PostgreSQL, SQLAlchemy, FastAPI, Pydantic
+PostgreSQL, SQLAlchemy, FastAPI, Pydantic, Selenium
