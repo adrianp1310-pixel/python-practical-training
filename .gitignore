@@ -5,3 +5,5 @@ __pycache__/
 .pytest_cache/
 .env
 .coverage
+# Selenium runtime artifacts
+data/*.png
